@@ -36,7 +36,7 @@
     {
       "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(deps)!: ",
+      "commitMessagePrefix": "feat(deps): ",
       "labels": ["dep/major"]
     },
     {
