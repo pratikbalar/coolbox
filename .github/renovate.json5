@@ -17,5 +17,37 @@
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\n.*?_VERSION=(?<currentValue>.*)"
       ]
     }
+  ],
+  "packageRules": [
+    // setup datasources
+    {
+      "matchDatasources": ["docker", "github-releases"],
+      "enabled": true,
+      "matchUpdateTypes": ["major", "minor", "patch"]
+    },
+    {
+      "matchDatasources": ["docker", "github-releases"],
+      "semanticCommitScope": "deps",
+      "separateMinorPatch": true
+    },
+    // add labels according to package and update types
+    {
+      "matchDatasources": ["docker", "github-releases"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(deps)!: ",
+      "labels": ["renovate/deps", "dep/major"]
+    },
+    {
+      "matchDatasources": ["docker", "github-releases"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "labels": ["renovate/deps", "dep/minor"]
+    },
+    {
+      "matchDatasources": ["docker", "github-releases"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "labels": ["renovate/deps", "dep/patch"]
+    }
   ]
 }
