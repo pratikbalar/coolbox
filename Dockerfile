@@ -162,7 +162,7 @@ RUN \
   && task --version
 
 # renovate: datasource=github-releases depName=sbstp/kubie
-ENV KUBIE_VERSION="v0.15.1"
+ENV KUBIE_VERSION=v0.15.0
 RUN \
   curl -fsSL -o "/usr/local/bin/kubie" \
     "https://github.com/sbstp/kubie/releases/download/${KUBIE_VERSION}/kubie-linux-amd64" \
@@ -170,7 +170,7 @@ RUN \
   && kubie --version
 
 # renovate: datasource=github-releases depName=mozilla/sops
-ENV SOPS_VERSION=v3.7.1
+ENV SOPS_VERSION=v3.7.0
 RUN \
   curl -fsSL -o "/usr/local/bin/sops" \
     "https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux"\
@@ -178,7 +178,7 @@ RUN \
   && sops --version
 
 # renovate: datasource=github-releases depName=stern/stern
-ENV STERN_VERSION=v1.20.1
+ENV STERN_VERSION=v1.20.0
 RUN \
   curl -fsSL "https://github.com/stern/stern/releases/download/${STERN_VERSION}/stern_${STERN_VERSION#*v}_linux_arm64.tar.gz" \
     | tar xvz -f - --strip-components=1 -C /tmp \
@@ -187,7 +187,7 @@ RUN \
   && rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=sachaos/viddy
-ENV VIDDY_VERSION=v0.3.1
+ENV VIDDY_VERSION=v0.3.0
 RUN \
   curl -fsSL "https://github.com/sachaos/viddy/releases/download/${VIDDY_VERSION}/viddy_${VIDDY_VERSION#*v}_Linux_arm64.tar.gz" \
     | tar xvz -f - -C /tmp \
