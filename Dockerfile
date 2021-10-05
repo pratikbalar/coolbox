@@ -1,19 +1,19 @@
 # dependencies
-FROM docker.io/fluxcd/flux-cli:v0.17.2 as flux
-FROM docker.io/hadolint/hadolint:v2.7.0 as hadolint
 FROM docker.io/alpine/helm:3.7.0 as helm
-FROM docker.io/jnorwood/helm-docs:v1.5.0 as helm-docs
-FROM docker.io/zegl/kube-score:v1.12.0 as kube-score
+FROM docker.io/aquasec/trivy:0.19.2 as trivy
 FROM docker.io/bitnami/kubectl:1.22.2 as kubectl
 FROM docker.io/cytopia/kubeval:0.16 as kubeval
-FROM docker.io/kubesec/kubesec:v2.11.4 as kubesec
-FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
-FROM docker.io/koalaman/shellcheck:v0.7.2 as shellcheck
+FROM docker.io/fluxcd/flux-cli:v0.17.2 as flux
+FROM docker.io/hadolint/hadolint:v2.7.0 as hadolint
 FROM docker.io/hashicorp/terraform:1.0.8 as terraform
-FROM docker.io/aquasec/trivy:0.19.2 as trivy
+FROM docker.io/jnorwood/helm-docs:v1.5.0 as helm-docs
+FROM docker.io/koalaman/shellcheck:v0.7.2 as shellcheck
+FROM docker.io/kubesec/kubesec:v2.11.4 as kubesec
 FROM docker.io/mikefarah/yq:4.13.3 as yq
-FROM docker.io/prom/prometheus:v2.30.3 as prom
 FROM docker.io/prom/alertmanager:v0.23.0 as prom-am
+FROM docker.io/prom/prometheus:v2.30.3 as prom
+FROM docker.io/zegl/kube-score:v1.12.0 as kube-score
+FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
 
 # base image
 FROM ubuntu:focal-20210921
@@ -99,8 +99,7 @@ RUN \
     /var/cache/apt/* \
     /var/tmp/*
 
-RUN \
-  echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
+RUN echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
 
 # install fish shell
 RUN \
@@ -212,6 +211,14 @@ RUN \
   && chmod +x /usr/local/bin/sops \
   && sops --version
 
+# renovate: datasource=github-releases depName=mvdan/sh
+ENV SHFMT_VERSION=v3.4.0
+RUN \
+  curl -fsSL -o /usr/local/bin/shfmt \
+    "https://github.com/mvdan/sh/releases/download/${SHFMT_VERSION}/shfmt_${SHFMT_VERSION}_linux_amd64" \
+  && chmod +x /usr/local/bin/shfmt \
+  && shfmt --version
+
 # renovate: datasource=github-releases depName=starship/starship
 ENV STARSHIP_VERSION=v0.58.0
 RUN \
@@ -248,21 +255,21 @@ RUN \
   && viddy --version \
   && rm -rf /tmp/*
 
-COPY --from=flux /usr/local/bin/flux /usr/local/bin/flux
-COPY --from=hadolint /bin/hadolint /usr/local/bin/hadolint
-COPY --from=helm /usr/bin/helm /usr/local/bin/helm
-COPY --from=helm-docs /usr/bin/helm-docs /usr/local/bin/helm-docs
-COPY --from=kube-score /kube-score /usr/local/bin/kube-score
-COPY --from=kubectl /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
-COPY --from=kubeval /usr/bin/kubeval /usr/local/bin/kubeval
-COPY --from=kubesec /bin/kubesec /usr/local/bin/kubesec
-COPY --from=kustomize /app/kustomize /usr/local/bin/kustomize
-COPY --from=shellcheck /bin/shellcheck /usr/local/bin/shellcheck
-COPY --from=terraform /bin/terraform /usr/local/bin/terraform
-COPY --from=trivy /usr/local/bin/trivy /usr/local/bin/trivy
-COPY --from=yq /usr/bin/yq /usr/local/bin/yq
-COPY --from=prom /bin/promtool /usr/local/bin/promtool
-COPY --from=prom-am /bin/amtool /usr/local/bin/amtool
+COPY --from=flux       /usr/local/bin/flux              /usr/local/bin/flux
+COPY --from=hadolint   /bin/hadolint                    /usr/local/bin/hadolint
+COPY --from=helm       /usr/bin/helm                    /usr/local/bin/helm
+COPY --from=helm-docs  /usr/bin/helm-docs               /usr/local/bin/helm-docs
+COPY --from=kube-score /kube-score                      /usr/local/bin/kube-score
+COPY --from=kubectl    /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
+COPY --from=kubesec    /bin/kubesec                     /usr/local/bin/kubesec
+COPY --from=kubeval    /usr/bin/kubeval                 /usr/local/bin/kubeval
+COPY --from=kustomize  /app/kustomize                   /usr/local/bin/kustomize
+COPY --from=prom       /bin/promtool                    /usr/local/bin/promtool
+COPY --from=prom-am    /bin/amtool                      /usr/local/bin/amtool
+COPY --from=shellcheck /bin/shellcheck                  /usr/local/bin/shellcheck
+COPY --from=terraform  /bin/terraform                   /usr/local/bin/terraform
+COPY --from=trivy      /usr/local/bin/trivy             /usr/local/bin/trivy
+COPY --from=yq         /usr/bin/yq                      /usr/local/bin/yq
 
 CMD [ "/bin/fish" ]
 
