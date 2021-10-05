@@ -10,6 +10,7 @@
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "commitMessageSuffix": "",
+  "prHourlyLimit": 1,
   "regexManagers": [
     {
       "fileMatch": ["^Dockerfile$"],
@@ -21,9 +22,10 @@
   "packageRules": [
     // setup datasources
     {
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "enabled": true,
-      "matchUpdateTypes": ["major", "minor", "patch"]
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "automerge": true
     },
     {
       "matchDatasources": ["docker", "github-releases", "pypi", "npm"],

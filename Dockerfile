@@ -249,49 +249,20 @@ RUN \
   && rm -rf /tmp/*
 
 COPY --from=flux /usr/local/bin/flux /usr/local/bin/flux
-RUN flux --version
-
 COPY --from=hadolint /bin/hadolint /usr/local/bin/hadolint
-RUN hadolint --version
-
 COPY --from=helm /usr/bin/helm /usr/local/bin/helm
-RUN helm version
-
 COPY --from=helm-docs /usr/bin/helm-docs /usr/local/bin/helm-docs
-RUN helm-docs --version
-
 COPY --from=kube-score /kube-score /usr/local/bin/kube-score
-RUN kube-score version
-
 COPY --from=kubectl /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
-RUN kubectl version --client
-
 COPY --from=kubeval /usr/bin/kubeval /usr/local/bin/kubeval
-RUN kubeval --version
-
 COPY --from=kubesec /bin/kubesec /usr/local/bin/kubesec
-RUN kubesec version
-
 COPY --from=kustomize /app/kustomize /usr/local/bin/kustomize
-RUN kustomize version
-
 COPY --from=shellcheck /bin/shellcheck /usr/local/bin/shellcheck
-RUN shellcheck --version
-
 COPY --from=terraform /bin/terraform /usr/local/bin/terraform
-RUN terraform version
-
 COPY --from=trivy /usr/local/bin/trivy /usr/local/bin/trivy
-RUN trivy --version
-
 COPY --from=yq /usr/bin/yq /usr/local/bin/yq
-RUN yq --version
-
 COPY --from=prom /bin/promtool /usr/local/bin/promtool
-RUN promtool --version
-
 COPY --from=prom-am /bin/amtool /usr/local/bin/amtool
-RUN amtool --version
 
 CMD [ "/bin/fish" ]
 
