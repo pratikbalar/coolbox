@@ -255,3 +255,5 @@ COPY --from=prom-am /bin/amtool /usr/local/bin/amtool
 RUN amtool --version
 
 CMD [ "/bin/fish" ]
+
+LABEL org.opencontainers.image.source https://github.com/onedr0p/coolbox

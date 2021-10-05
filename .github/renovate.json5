@@ -21,9 +21,6 @@
   "packageRules": [
     // setup datasources
     {
-      "automerge": false
-    },
-    {
       "matchDatasources": ["docker", "github-releases"],
       "enabled": true,
       "matchUpdateTypes": ["major", "minor", "patch"]
