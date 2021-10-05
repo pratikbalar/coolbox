@@ -11,7 +11,7 @@ FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
 FROM docker.io/koalaman/shellcheck:v0.7.2 as shellcheck
 FROM docker.io/hashicorp/terraform:1.0.8 as terraform
 FROM docker.io/aquasec/trivy:0.19.2 as trivy
-FROM docker.io/mikefarah/yq:4.13.0 as yq
+FROM docker.io/mikefarah/yq:4.13.3 as yq
 FROM docker.io/prom/prometheus:v2.30.3 as prom
 FROM docker.io/prom/alertmanager:v0.23.0 as prom-am
 
