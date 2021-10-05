@@ -1,9 +1,9 @@
 name: container-release
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types:
+      - created
 
 env:
   REGISTRY_IMAGE: ghcr.io/onedr0p/coolbox
@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Prepare
         id: prep
@@ -52,4 +50,5 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY_IMAGE }}:${{ steps.prep.outputs.version }}
+            ${{ env.REGISTRY_IMAGE }}:v${{ steps.prep.outputs.version }}
             ${{ env.REGISTRY_IMAGE }}:latest
