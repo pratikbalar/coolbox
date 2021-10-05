@@ -1,5 +1,6 @@
 # dependencies
 FROM docker.io/alpine/helm:3.7.0 as helm
+FROM docker.io/argoproj/argocli:v3.1.13 as argo-cli
 FROM docker.io/aquasec/trivy:0.19.2 as trivy
 FROM docker.io/bitnami/kubectl:1.22.2 as kubectl
 FROM docker.io/cytopia/kubeval:0.16 as kubeval
@@ -27,8 +28,7 @@ ENV \
   DEBIAN_FRONTEND="noninteractive" \
   APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
-ENV \
-  GO_VERSION=1.17
+ENV GO_VERSION=1.17
 
 ENV \
   GOPATH="/opt/toolbox/go" \
@@ -86,7 +86,6 @@ RUN \
     traceroute \
     tree \
     wget \
-    # shfmt \
     unzip \
     zip \
   && \
@@ -101,13 +100,14 @@ RUN \
 
 RUN echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
 
-# install fish shell
+# renovate: datasource=repology depName=linuxbrew/fish
+ENV FISH_VERSION=3.3.1
 RUN \
   add-apt-repository ppa:fish-shell/release-3 \
   && \
   apt-get update -qy && \
   apt-get install -qy \
-    fish \
+    fish=${FISH_VERSION}* \
   && \
   apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   apt-get autoremove -qy && \
@@ -183,6 +183,7 @@ RUN \
   && \
   aws --version \
   && yamllint --version \
+  && ansible --version \
   && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
   && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
 
@@ -255,6 +256,7 @@ RUN \
   && viddy --version \
   && rm -rf /tmp/*
 
+COPY --from=argo-cli   /bin/argo                        /usr/local/bin/argo
 COPY --from=flux       /usr/local/bin/flux              /usr/local/bin/flux
 COPY --from=hadolint   /bin/hadolint                    /usr/local/bin/hadolint
 COPY --from=helm       /usr/bin/helm                    /usr/local/bin/helm
