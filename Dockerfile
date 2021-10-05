@@ -44,21 +44,52 @@ RUN \
   && \
   apt-get update -qy \
   && apt-get install -qy \
+    acl \
     apt-transport-https \
     bash \
+    bzip2 \
     ca-certificates \
     curl \
+    diffutils \
+    findutils \
     git \
     gnupg \
+    gawk \
+    grep \
+    gzip \
+    hostname \
+    iputils-tracepath \
     jq \
+    keyutils \
+    less \
+    libcap2 \
+    lsof \
     lsb-release \
+    mlocate \
+    mtr \
+    nano \
+    openssl \
+    passwd \
+    pigz \
+    p11-kit \
     python3 \
     python3-dev \
     python3-pip \
+    rclone \
+    rsync \
+    sed \
     software-properties-common \
+    sudo \
+    tar \
+    tcpdump \
+    time \
     tmux \
+    traceroute \
+    tree \
+    wget \
     # shfmt \
     unzip \
+    zip \
   && \
   apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   apt-get autoremove -qy && \
@@ -68,6 +99,9 @@ RUN \
     /var/lib/apt/lists/* \
     /var/cache/apt/* \
     /var/tmp/*
+
+RUN \
+  echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
 
 # install fish shell
 # hadolint ignore=DL3008,DL3015,DL4006
@@ -156,6 +190,15 @@ RUN \
   && yamllint --version \
   && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
   && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+
+# renovate: datasource=github-releases depName=twpayne/chezmoi
+ENV CHEZMOI_VERSION=v2.6.1
+RUN \
+  curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#*v}_linux_amd64.tar.gz" \
+    | tar xvz -f - -C /tmp \
+  && mv /tmp/chezmoi /usr/local/bin/chezmoi \
+  && chezmoi --version \
+  && rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=sbstp/kubie
 ENV KUBIE_VERSION=v0.15.1
@@ -257,3 +300,4 @@ RUN amtool --version
 CMD [ "/bin/fish" ]
 
 LABEL org.opencontainers.image.source https://github.com/onedr0p/coolbox
+LABEL com.github.containers.toolbox="true"
