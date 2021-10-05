@@ -27,27 +27,27 @@
     },
     {
       "matchDatasources": ["docker", "github-releases"],
-      "semanticCommitScope": "deps",
+      "semanticCommitScope": "bin",
       "separateMinorPatch": true
     },
     // add labels according to package and update types
     {
       "matchDatasources": ["docker", "github-releases"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(deps)!: ",
-      "labels": ["renovate/deps", "dep/major"]
+      "commitMessagePrefix": "feat(bin)!: ",
+      "labels": ["dep/major"]
     },
     {
       "matchDatasources": ["docker", "github-releases"],
       "matchUpdateTypes": ["minor"],
       "semanticCommitType": "feat",
-      "labels": ["renovate/deps", "dep/minor"]
+      "labels": ["dep/minor"]
     },
     {
       "matchDatasources": ["docker", "github-releases"],
       "matchUpdateTypes": ["patch"],
       "semanticCommitType": "fix",
-      "labels": ["renovate/deps", "dep/patch"]
+      "labels": ["dep/patch"]
     }
   ]
 }
