@@ -16,7 +16,7 @@ FROM docker.io/zegl/kube-score:v1.12.0 as kube-score
 FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
 
 # base image
-FROM ubuntu:focal-20210921
+FROM ubuntu:20.04@sha256:a0d9e826ab87bd665cfc640598a871b748b4b70a01a4f3d174d4fb02adad07a9
 
 WORKDIR /opt/toolbox
 
