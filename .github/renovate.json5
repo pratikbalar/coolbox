@@ -27,14 +27,14 @@
     },
     {
       "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
-      "semanticCommitScope": "bin",
+      "semanticCommitScope": "deps",
       "separateMinorPatch": true
     },
     // add labels according to package and update types
     {
       "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(bin)!: ",
+      "commitMessagePrefix": "feat(deps)!: ",
       "labels": ["dep/major"]
     },
     {
