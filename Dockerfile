@@ -56,6 +56,7 @@ RUN \
     python3-dev \
     python3-pip \
     software-properties-common \
+    tmux \
     # shfmt \
     unzip \
   && \
@@ -160,12 +161,39 @@ RUN \
   sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin \
   && task --version
 
+# renovate: datasource=github-releases depName=sbstp/kubie
+ENV KUBIE_VERSION="v0.15.1"
 RUN \
-  sops_version=$(curl -sL "https://api.github.com/repos/mozilla/sops/releases/latest" | jq --raw-output ".tag_name") \
-    && curl -fsSL -o "/usr/local/bin/sops" \
-      "https://github.com/mozilla/sops/releases/download/${sops_version}/sops-${sops_version}.linux"\
-    && chmod +x "/usr/local/bin/sops" \
-    && sops --version
+  curl -fsSL -o "/usr/local/bin/kubie" \
+    "https://github.com/sbstp/kubie/releases/download/${KUBIE_VERSION}/kubie-linux-amd64" \
+  && chmod +x /usr/local/bin/kubie \
+  && kubie --version
+
+# renovate: datasource=github-releases depName=mozilla/sops
+ENV SOPS_VERSION=v3.7.1
+RUN \
+  curl -fsSL -o "/usr/local/bin/sops" \
+    "https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux"\
+  && chmod +x /usr/local/bin/sops \
+  && sops --version
+
+# renovate: datasource=github-releases depName=stern/stern
+ENV STERN_VERSION=v1.20.1
+RUN \
+  curl -fsSL "https://github.com/stern/stern/releases/download/${STERN_VERSION}/stern_${STERN_VERSION#*v}_linux_arm64.tar.gz" \
+    | tar xvz -f - --strip-components=1 -C /tmp \
+  && mv /tmp/stern /usr/local/bin/stern \
+  && stern --version \
+  && rm -rf /tmp/*
+
+# renovate: datasource=github-releases depName=sachaos/viddy
+ENV VIDDY_VERSION=v0.3.1
+RUN \
+  curl -fsSL "https://github.com/sachaos/viddy/releases/download/${VIDDY_VERSION}/viddy_${VIDDY_VERSION#*v}_Linux_arm64.tar.gz" \
+    | tar xvz -f - -C /tmp \
+  && mv /tmp/viddy /usr/local/bin/viddy \
+  && stern --version \
+  && rm -rf /tmp/*
 
 COPY --from=flux /usr/local/bin/flux /usr/local/bin/flux
 RUN flux --version

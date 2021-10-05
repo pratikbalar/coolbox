@@ -1,0 +1,10 @@
+{
+  "regexManagers": [
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\n.*?_VERSION=(?<currentValue>.*)"
+      ]
+    }
+  ]
+}
