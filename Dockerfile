@@ -157,12 +157,8 @@ RUN \
   && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
   && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
 
-RUN \
-  sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin \
-  && task --version
-
 # renovate: datasource=github-releases depName=sbstp/kubie
-ENV KUBIE_VERSION=v0.15.0
+ENV KUBIE_VERSION=v0.15.1
 RUN \
   curl -fsSL -o "/usr/local/bin/kubie" \
     "https://github.com/sbstp/kubie/releases/download/${KUBIE_VERSION}/kubie-linux-amd64" \
@@ -170,29 +166,47 @@ RUN \
   && kubie --version
 
 # renovate: datasource=github-releases depName=mozilla/sops
-ENV SOPS_VERSION=v3.7.0
+ENV SOPS_VERSION=v3.7.1
 RUN \
-  curl -fsSL -o "/usr/local/bin/sops" \
-    "https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux"\
+  curl -fsSL -o /usr/local/bin/sops \
+    "https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux" \
   && chmod +x /usr/local/bin/sops \
   && sops --version
 
-# renovate: datasource=github-releases depName=stern/stern
-ENV STERN_VERSION=v1.20.0
+# renovate: datasource=github-releases depName=starship/starship
+ENV STARSHIP_VERSION=v0.58.0
 RUN \
-  curl -fsSL "https://github.com/stern/stern/releases/download/${STERN_VERSION}/stern_${STERN_VERSION#*v}_linux_arm64.tar.gz" \
+  curl -fsSL "https://github.com/starship/starship/releases/download/${STARSHIP_VERSION}/starship-x86_64-unknown-linux-gnu.tar.gz" \
+    | tar xvz -f - -C /tmp \
+  && mv /tmp/starship /usr/local/bin/starship \
+  && starship --version \
+  && rm -rf /tmp/*
+
+# renovate: datasource=github-releases depName=stern/stern
+ENV STERN_VERSION=v1.20.1
+RUN \
+  curl -fsSL "https://github.com/stern/stern/releases/download/${STERN_VERSION}/stern_${STERN_VERSION#*v}_linux_amd64.tar.gz" \
     | tar xvz -f - --strip-components=1 -C /tmp \
   && mv /tmp/stern /usr/local/bin/stern \
   && stern --version \
   && rm -rf /tmp/*
 
-# renovate: datasource=github-releases depName=sachaos/viddy
-ENV VIDDY_VERSION=v0.3.0
+# renovate: datasource=github-releases depName=go-task/task
+ENV TASK_VERSION=v3.9.0
 RUN \
-  curl -fsSL "https://github.com/sachaos/viddy/releases/download/${VIDDY_VERSION}/viddy_${VIDDY_VERSION#*v}_Linux_arm64.tar.gz" \
+  curl -fsSL "https://github.com/go-task/task/releases/download/${TASK_VERSION}/task_linux_amd64.tar.gz" \
+    | tar xvz -f - -C /tmp \
+  && mv /tmp/task /usr/local/bin/task \
+  && task --version \
+  && rm -rf /tmp/*
+
+# renovate: datasource=github-releases depName=sachaos/viddy
+ENV VIDDY_VERSION=v0.3.1
+RUN \
+  curl -fsSL "https://github.com/sachaos/viddy/releases/download/${VIDDY_VERSION}/viddy_${VIDDY_VERSION#*v}_Linux_x86_64.tar.gz" \
     | tar xvz -f - -C /tmp \
   && mv /tmp/viddy /usr/local/bin/viddy \
-  && stern --version \
+  && viddy --version \
   && rm -rf /tmp/*
 
 COPY --from=flux /usr/local/bin/flux /usr/local/bin/flux
