@@ -34,7 +34,6 @@ ENV \
   GOPATH="/opt/toolbox/go" \
   PATH="$PATH:/opt/toolbox/node_modules/.bin:/usr/lib/go-${GO_VERSION}/bin:/opt/toolbox/go/bin"
 
-# hadolint ignore=DL3008,DL3015
 RUN \
   set -eux \
   && echo 'APT::Install-Recommends "false";' >/etc/apt/apt.conf.d/00recommends \
@@ -104,7 +103,6 @@ RUN \
   echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
 
 # install fish shell
-# hadolint ignore=DL3008,DL3015,DL4006
 RUN \
   add-apt-repository ppa:fish-shell/release-3 \
   && \
@@ -122,7 +120,6 @@ RUN \
     /var/tmp/*
 
 # install nodejs
-# hadolint ignore=DL3008,DL3015,DL4006
 RUN \
   curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
   apt-get update -qy && \
@@ -142,7 +139,6 @@ RUN \
     /var/tmp/*
 
 # install golang
-# hadolint ignore=DL3008,DL3015,DL4006
 RUN \
   add-apt-repository ppa:longsleep/golang-backports \
   && \

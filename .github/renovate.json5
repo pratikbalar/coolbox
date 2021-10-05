@@ -21,30 +21,30 @@
   "packageRules": [
     // setup datasources
     {
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "enabled": true,
       "matchUpdateTypes": ["major", "minor", "patch"]
     },
     {
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "semanticCommitScope": "bin",
       "separateMinorPatch": true
     },
     // add labels according to package and update types
     {
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "feat(bin)!: ",
       "labels": ["dep/major"]
     },
     {
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "matchUpdateTypes": ["minor"],
       "semanticCommitType": "feat",
       "labels": ["dep/minor"]
     },
     {
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
       "matchUpdateTypes": ["patch"],
       "semanticCommitType": "fix",
       "labels": ["dep/patch"]
