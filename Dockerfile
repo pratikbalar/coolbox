@@ -139,13 +139,13 @@ RUN \
   go install github.com/drone/envsubst/cmd/envsubst@latest \
   && envsubst --version
 
-# # nodejs
-# COPY package*.json .
-# RUN \
-#   npm ci --only=production \
-#   && markdownlint --version \
-#   && prettier --version \
-#   && semantic-release --version
+# nodejs
+COPY package*.json .
+RUN \
+  npm ci --only=production \
+  && markdownlint --version \
+  && prettier --version \
+  && semantic-release --version
 
 # python
 COPY requirements.txt .
