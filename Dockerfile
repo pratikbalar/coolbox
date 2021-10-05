@@ -7,7 +7,7 @@ FROM docker.io/zegl/kube-score:v1.12.0 as kube-score
 FROM docker.io/bitnami/kubectl:1.20.9 as kubectl
 FROM docker.io/cytopia/kubeval:0.16 as kubeval
 FROM docker.io/kubesec/kubesec:v2.11.4 as kubesec
-FROM k8s.gcr.io/kustomize/kustomize:v4.3.0 as kustomize
+FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
 FROM docker.io/koalaman/shellcheck:v0.7.2 as shellcheck
 FROM docker.io/hashicorp/terraform:1.0.8 as terraform
 FROM docker.io/aquasec/trivy:0.19.2 as trivy
