@@ -17,151 +17,103 @@ FROM docker.io/zegl/kube-score:v1.12.0 as kube-score
 FROM k8s.gcr.io/kustomize/kustomize:v4.4.0 as kustomize
 
 # base image
-FROM ubuntu:20.04@sha256:a0d9e826ab87bd665cfc640598a871b748b4b70a01a4f3d174d4fb02adad07a9
+FROM registry.fedoraproject.org/fedora:35@sha256:b7bb22ac74a4cdad8fa64341cb2f665a5ca9301b526437fb62013457fea605b2
 
 WORKDIR /opt/toolbox
 
-# DEBIAN_FRONTEND: https://askubuntu.com/questions/972516/debian-frontend-environment-variable
-# APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: http://stackoverflow.com/questions/48162574/ddg#49462622
-ENV \
-  DEBCONF_NONINTERACTIVE_SEEN=true \
-  DEBIAN_FRONTEND="noninteractive" \
-  APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
-
-ENV GO_VERSION=1.17
-
-ENV \
-  GOPATH="/opt/toolbox/go" \
-  PATH="$PATH:/opt/toolbox/node_modules/.bin:/usr/lib/go-${GO_VERSION}/bin:/opt/toolbox/go/bin"
+ENV GOPATH="/opt/toolbox/go"
+ENV PATH="$PATH:/opt/toolbox/node_modules/.bin:${GOPATH}/bin"
 
 RUN \
-  set -eux \
-  && echo 'APT::Install-Recommends "false";' >/etc/apt/apt.conf.d/00recommends \
-  && echo 'APT::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
-  && echo 'APT::Get::Install-Recommends "false";' >>/etc/apt/apt.conf.d/00recommends \
-  && echo 'APT::Get::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
-  && \
-  apt-get update -qy \
-  && apt-get install -qy \
+  sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
+  && echo "installonly_limit=15" | tee -a /etc/dnf/dnf.conf \
+  && echo "max_parallel_downloads=20" | tee -a /etc/dnf/dnf.conf
+
+# renovate: datasource=repology depName=fedora_35
+ENV BELOW_VERSION=0.3.0
+# renovate: datasource=repology depName=fedora_35
+ENV FISH_VERSION=3.3.1
+# renovate: datasource=repology depName=fedora_35
+ENV GO_VERSION=1.16.8
+# renovate: datasource=repology depName=fedora_35
+ENV NODE_VERSION=16.10.0
+# renovate: datasource=repology depName=fedora_35
+ENV NPM_VERSION=7.24.0
+
+RUN \
+  dnf install -y \
     acl \
-    apt-transport-https \
+    automake \
     bash \
+    bash-completion \
+    bc \
+    below-${BELOW_VERSION} \
     bzip2 \
-    ca-certificates \
     curl \
     diffutils \
+    dnf-plugins-core \
     findutils \
+    fish-${FISH_VERSION} \
+    flatpak-spawn \
+    fpaste \
+    gawk \
     git \
     gnupg \
-    gawk \
+    gnupg2-smime \
+    golang-${GO_VERSION} \
     grep \
+    gvfs-client \
     gzip \
     hostname \
-    iputils-tracepath \
-    jq \
+    iproute \
+    iputils \
+    jwhois \
     keyutils \
+    krb5-libs \
     less \
-    libcap2 \
+    libcap \
+    libffi-devel \
     lsof \
-    lsb-release \
+    man-db \
+    man-pages \
     mlocate \
     mtr \
-    nano \
+    nano-default-editor \
+    nodejs-${NODE_VERSION} \
+    npm-${NPM_VERSION} \
+    nss-mdns \
     openssl \
+    openssh-clients \
+    openssl-devel \
+    p11-kit \
+    pam \
     passwd \
     pigz \
-    p11-kit \
-    python3 \
-    python3-dev \
-    python3-pip \
-    rclone \
+    procps-ng \
+    python \
+    python-devel \
+    python-pip \
+    python-setuptools \
+    python-six \
+    rpm \
     rsync \
     sed \
-    software-properties-common \
+    shadow-utils \
     sudo \
+    systemd \
     tar \
     tcpdump \
     time \
-    tmux \
     traceroute \
     tree \
-    wget \
     unzip \
-    zip \
-  && \
-  apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -qy && \
-  apt-get clean -qy && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/cache/apt/* \
-    /var/tmp/*
-
-RUN echo "Defaults exempt_group=sudo" > /etc/sudoers.d/exempt_group
-
-# renovate: datasource=repology depName=linuxbrew/fish
-ENV FISH_VERSION=3.3.1
-RUN \
-  add-apt-repository ppa:fish-shell/release-3 \
-  && \
-  apt-get update -qy && \
-  apt-get install -qy \
-    fish=${FISH_VERSION}* \
-  && \
-  apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -qy && \
-  apt-get clean -qy && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/cache/apt/* \
-    /var/tmp/*
-
-# install nodejs
-RUN \
-  curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-  apt-get update -qy && \
-  apt-get install -qy \
-    gcc \
-    g++ \
-    make \
-    nodejs \
-  && \
-  apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -qy && \
-  apt-get clean -qy && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/cache/apt/* \
-    /var/tmp/*
-
-# install golang
-RUN \
-  add-apt-repository ppa:longsleep/golang-backports \
-  && \
-  apt-get update -qy && \
-  apt-get install -qy \
-    golang-${GO_VERSION} \
-  && \
-  apt-get purge -qy --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -qy && \
-  apt-get clean -qy && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/cache/apt/* \
-    /var/tmp/*
-
-# WORKDIR /tmp/trivy
-# RUN \
-#   git clone https://github.com/aquasecurity/trivy.git --branch v0.19.2 --depth 1 --single-branch . \
-#   && mkdir -p /opt/toolbox/trivy/contrib/ \
-#   && cp /tmp/trivy/contrib/*.tpl /opt/toolbox/trivy/contrib/ \
-#   && rm -rf /tmp/trivy
-
-WORKDIR /opt/toolbox
+    vte-profile \
+    wget \
+    which \
+    words \
+    xorg-x11-xauth \
+    xz \
+    zip
 
 # golang
 RUN \
@@ -183,9 +135,7 @@ RUN \
   && \
   aws --version \
   && yamllint --version \
-  && ansible --version \
-  && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
-  && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+  && ansible --version
 
 # renovate: datasource=github-releases depName=twpayne/chezmoi
 ENV CHEZMOI_VERSION=v2.6.1
@@ -273,7 +223,7 @@ COPY --from=terraform  /bin/terraform                   /usr/local/bin/terraform
 COPY --from=trivy      /usr/local/bin/trivy             /usr/local/bin/trivy
 COPY --from=yq         /usr/bin/yq                      /usr/local/bin/yq
 
-CMD [ "/bin/fish" ]
+CMD [ "/usr/bin/fish" ]
 
 LABEL org.opencontainers.image.source https://github.com/onedr0p/coolbox
 LABEL com.github.containers.toolbox="true"

@@ -24,30 +24,29 @@
     // setup datasources
     {
       "enabled": true,
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm", "repology"],
       "matchUpdateTypes": ["major", "minor", "patch"],
-      "automerge": true
     },
     {
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm", "repology"],
       "semanticCommitScope": "deps",
       "separateMinorPatch": true
     },
     // add labels according to package and update types
     {
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm", "repology"],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "feat(deps): ",
       "labels": ["dep/major"]
     },
     {
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm", "repology"],
       "matchUpdateTypes": ["minor"],
       "semanticCommitType": "feat",
       "labels": ["dep/minor"]
     },
     {
-      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm", "repology"],
       "matchUpdateTypes": ["patch"],
       "semanticCommitType": "fix",
       "labels": ["dep/patch"]
