@@ -39,6 +39,8 @@ ENV GO_VERSION=1.16.8
 ENV NODE_VERSION=16.10.0
 # renovate: datasource=repology depName=fedora_35
 ENV NPM_VERSION=7.24.0
+# renovate: datasource=repology depName=fedora_35
+ENV TMATE_VERSION=2.4.0
 
 RUN \
   dnf install -y \
@@ -104,6 +106,8 @@ RUN \
     tar \
     tcpdump \
     time \
+    tmate-${TMATE_VERSION} \
+    tmux \
     traceroute \
     tree \
     unzip \
@@ -223,7 +227,14 @@ COPY --from=terraform  /bin/terraform                   /usr/local/bin/terraform
 COPY --from=trivy      /usr/local/bin/trivy             /usr/local/bin/trivy
 COPY --from=yq         /usr/bin/yq                      /usr/local/bin/yq
 
-CMD [ "/usr/bin/fish" ]
+CMD [ "/bin/sh" ]
 
-LABEL org.opencontainers.image.source https://github.com/onedr0p/coolbox
-LABEL com.github.containers.toolbox="true"
+ENV NAME=fedora-toolbox VERSION=35
+LABEL org.opencontainers.image.source https://github.com/onedr0p/coolbox \
+      com.github.containers.toolbox="true" \
+      com.redhat.component="$NAME" \
+      name="$NAME" \
+      version="$VERSION" \
+      usage="This image is meant to be used with the toolbox command" \
+      summary="Fedora toolbox" \
+      maintainer="Devin Buhl <devin.kray@gmail.com>"
