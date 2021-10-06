@@ -5,9 +5,6 @@ on:
     types:
       - created
 
-env:
-  REGISTRY_IMAGE: ghcr.io/onedr0p/coolbox
-
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -39,7 +36,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY_IMAGE }}:${{ steps.prep.outputs.version }}
-            ${{ env.REGISTRY_IMAGE }}:v${{ steps.prep.outputs.version }}
-            ${{ env.REGISTRY_IMAGE }}:latest
-          cache-from: type=registry,ref=ghcr.io/onedr0p/coolbox:latest
+            ghcr.io/onedr0p/coolbox:${{ steps.prep.outputs.version }}
+            ghcr.io/onedr0p/coolbox:v${{ steps.prep.outputs.version }}
+            ghcr.io/onedr0p/coolbox:latest
+          cache-from: type=registry,ref=ghcr.io/onedr0p/coolbox:buildcache
+          cache-to: type=registry,ref=ghcr.io/onedr0p/coolbox:buildcache,mode=max
