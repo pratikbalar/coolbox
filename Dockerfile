@@ -150,6 +150,15 @@ RUN \
   && chezmoi --version \
   && rm -rf /tmp/*
 
+# renovate: datasource=github-releases depName=schollz/croc
+ENV CROC_VERSION=v9.4.2
+RUN \
+  curl -fsSL "https://github.com/schollz/croc/releases/download/${CROC_VERSION}/croc_${CROC_VERSION#*v}_Linux-64bit.tar.gz" \
+    | tar xvz -f - -C /tmp \
+  && mv /tmp/croc /usr/local/bin/croc \
+  && croc --version \
+  && rm -rf /tmp/*
+
 # renovate: datasource=github-releases depName=sbstp/kubie
 ENV KUBIE_VERSION=v0.15.1
 RUN \
