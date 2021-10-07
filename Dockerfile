@@ -141,6 +141,14 @@ RUN \
   && yamllint --version \
   && ansible --version
 
+# renovate: datasource=github-releases depName=projectcalico/calicoctl
+ENV CALICOCTL_VERSION=v3.20.2
+RUN \
+  curl -fsSL -o /usr/local/bin/calicoctl \
+    "https://github.com/projectcalico/calicoctl/releases/download/${CALICOCTL_VERSION}/calicoctl-linux-amd64" \
+  && chmod +x /usr/local/bin/calicoctl \
+  && calicoctl version
+
 # renovate: datasource=github-releases depName=twpayne/chezmoi
 ENV CHEZMOI_VERSION=v2.6.1
 RUN \
@@ -162,7 +170,7 @@ RUN \
 # renovate: datasource=github-releases depName=sbstp/kubie
 ENV KUBIE_VERSION=v0.15.1
 RUN \
-  curl -fsSL -o "/usr/local/bin/kubie" \
+  curl -fsSL -o /usr/local/bin/kubie \
     "https://github.com/sbstp/kubie/releases/download/${KUBIE_VERSION}/kubie-linux-amd64" \
   && chmod +x /usr/local/bin/kubie \
   && kubie --version
