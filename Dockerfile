@@ -218,6 +218,15 @@ RUN \
   && task --version \
   && rm -rf /tmp/*
 
+# renovate: datasource=github-releases depName=vmware-tanzu/velero
+ENV VELERO_VERSION=v1.7.0
+RUN \
+  curl -fsSL "https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION#*v}-linux-amd64.tar.gz" \
+    | tar xvz -f - --strip-components=1 -C /tmp \
+  && mv /tmp/velero /usr/local/bin/velero \
+  && velero --version \
+  && rm -rf /tmp/*
+
 # renovate: datasource=github-releases depName=sachaos/viddy
 ENV VIDDY_VERSION=v0.3.1
 RUN \
