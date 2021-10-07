@@ -13,7 +13,10 @@
   "prHourlyLimit": 1,
   "regexManagers": [
     {
-      "fileMatch": ["^Dockerfile$"],
+      "fileMatch": [
+        "Dockerfile",
+        "hack/.+\\.sh$"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\n.*?_VERSION=(?<currentValue>.*)"
       ],
