@@ -6,7 +6,6 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "commitBody": "Signed-off-by: Devin Buhl <onedr0p@users.noreply.github.com>",
   "suppressNotifications": ["prIgnoreNotification"],
-  "rebaseWhen": "conflicted",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "commitMessageSuffix": "",
@@ -53,6 +52,13 @@
       "matchUpdateTypes": ["patch"],
       "semanticCommitType": "fix",
       "labels": ["dep/patch"]
+    },
+    {
+      "matchDatasources": ["docker", "github-releases", "pypi", "npm"],
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": [".*"]
     }
   ]
 }
